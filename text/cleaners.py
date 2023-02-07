@@ -20,6 +20,7 @@ from pypinyin import lazy_pinyin, BOPOMOFO
 import jieba, cn2an
 
 # Separated from mixed cleaners
+from text.mandarin import number_to_chinese, chinese_to_bopomofo, latin_to_bopomofo, chinese_to_romaji, chinese_to_lazy_ipa, chinese_to_ipa, chinese_to_ipa2
 from text.english import english_to_ipa as english_cleaners_ipa
 from text.english import english_to_ipa2 as english_cleaners_ipa2
 from text.english import english_to_lazy_ipa as english_cleaners_lazy_ipa
@@ -447,7 +448,12 @@ def korean_cleaners(text):
 
 
 def chinese_cleaners(text):
-  raise Exception("该笔记本已取消对于该cleaners的支持。你可以向其他相关领域人士继续寻求帮助。")
+      '''Pipeline for Chinese text'''
+    text = number_to_chinese(text)
+    text = chinese_to_bopomofo(text)
+    text = latin_to_bopomofo(text)
+    text = re.sub(r'([ˉˊˇˋ˙])$', r'\1。', text)
+    return text
 
 
 def zh_ja_mixture_cleaners(text):
